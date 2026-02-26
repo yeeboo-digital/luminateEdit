@@ -1,18 +1,201 @@
-Luminate Online Page Editor - Opera
-===================================
+# Luminate Online Page Editor - Opera
 
-In Opera, the Luminate Online Page Editor extension adds a pencil icon to the address bar. The icon is only 
-displayed when viewing a Luminate Online page.
+Browser extension for Opera that adds a pencil icon to the address bar when viewing Luminate Online pages, providing one-click access to administrative interfaces.
 
-![screenshot](https://raw.github.com/noahcooper/luminateEdit/master/opera/screenshot.png "Opera Screenshot")
+## Status
 
-The Opera extension includes 
-[luminateEdit.js](https://github.com/noahcooper/luminateEdit/blob/master/shared/src/luminateEdit.js) and 
-[luminateEdit-operaNext.js](https://github.com/noahcooper/luminateEdit/blob/master/opera/src/luminateEdit-operaNext.js), 
-compiled in [background.js](https://github.com/noahcooper/luminateEdit/blob/master/opera/src/background.js).
+**Current Version**: 1.12 (Manifest V2)
+**Modernization**: 🔄 Migrating to Manifest V3
+**Original Author**: [Noah Cooper](https://github.com/noahcooper)
+**Current Maintainer**: [Yeeboo Digital](https://github.com/yeeboo-digital)
 
-Download
---------
+---
 
-The extension can be downloaded from the Opera add-ons site at 
-[https://addons.opera.com/en/extensions/details/luminate-online-page-editor/](https://addons.opera.com/en/extensions/details/luminate-online-page-editor/).
+## Features
+
+When viewing a Luminate Online page, a **pencil icon** appears in the address bar. Clicking it opens the corresponding admin interface in a new tab.
+
+![screenshot](screenshot.png)
+
+Supports 50+ page types including PageBuilder, TeamRaiser, Donation Forms, Surveys, and more.
+
+---
+
+## Installation
+
+### From Opera Add-ons (Coming Soon)
+
+The extension will be published to Opera Add-ons after Manifest V3 migration.
+
+### From Source (Current Method)
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yeeboo-digital/luminateEdit.git
+   cd luminateEdit
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Build the extension**
+   ```bash
+   npm run build:opera
+   ```
+
+4. **Load in Opera**
+   - Navigate to `opera://extensions`
+   - Enable "Developer mode" (toggle in top right)
+   - Click "Load unpacked"
+   - Select the `opera/` directory (or `dist/opera/` if using build)
+
+---
+
+## Technical Details
+
+### Current Implementation (Manifest V2)
+
+- **Background Script**: Persistent background page
+- **Page Action API**: Shows icon only on LO pages
+- **Permissions**: `tabs`
+- **Browser API**: Uses Chrome Extensions API (Opera is Chromium-based)
+
+### Files
+
+```
+opera/
+├── manifest.json       # Extension configuration (MV2)
+├── background.js       # Compiled background script
+├── logo16.png         # 16x16 icon
+├── logo48.png         # 48x48 icon
+├── logo128.png        # 128x128 icon
+├── screenshot.png     # Store screenshot
+└── src/
+    ├── background.js              # Background script entry point
+    └── luminateEdit-operaNext.js  # Opera-specific wrapper
+```
+
+### Core Logic
+
+The extension uses shared logic from [luminateEdit.js](https://github.com/yeeboo-digital/luminateEdit/blob/main/shared/src/luminateEdit.js) for servlet detection and URL mapping, wrapped in Chrome-compatible APIs in [luminateEdit-operaNext.js](https://github.com/yeeboo-digital/luminateEdit/blob/main/opera/src/luminateEdit-operaNext.js).
+
+Compiled into [background.js](https://github.com/yeeboo-digital/luminateEdit/blob/main/opera/background.js) for runtime.
+
+---
+
+## Opera-Specific Notes
+
+### Chromium-Based
+
+Modern Opera (Opera 15+) is based on Chromium, which means:
+
+- Uses the same Chrome Extensions API
+- Compatible with Chrome extension code
+- Similar behavior to Chrome/Edge
+- Supports most Chrome extensions with minimal changes
+
+### Opera "Next"
+
+The original implementation targeted "Opera Next" (the beta channel). Modern Opera uses the stable release, which follows Chrome's extension model closely.
+
+---
+
+## Manifest V3 Migration
+
+⚠️ **Important**: As Opera uses Chromium, it follows Chrome's deprecation of Manifest V2.
+
+### Key Changes Required
+
+1. **Service Worker** instead of background page
+2. **Action API** instead of Page Action
+3. **Updated permissions** model
+4. **Modern JavaScript** (ES6 modules)
+
+### Migration Status
+
+- [ ] Update manifest to V3
+- [ ] Convert background page to service worker
+- [ ] Replace pageAction with action API
+- [ ] Update permissions
+- [ ] Test in Opera
+- [ ] Submit to Opera Add-ons
+
+See [ARCHITECTURE.md](../ARCHITECTURE.md) for migration details.
+
+---
+
+## Development
+
+### Testing Locally
+
+After loading the unpacked extension:
+
+1. Navigate to a Luminate Online site (e.g., `https://example.com/site/PageServer?pagename=home`)
+2. Verify the pencil icon appears in the address bar
+3. Click the icon
+4. Verify the correct admin page opens
+
+### Debugging
+
+- **View logs**: Right-click extension icon → Inspect background page
+- **Reload extension**: `opera://extensions` → Click reload button
+- **Check permissions**: Ensure extension has access to the site
+
+### Common Issues
+
+**Icon not appearing**:
+- Not on a Luminate Online page (must have `/site/` in URL)
+- Extension not enabled
+- Servlet not yet supported
+
+**Wrong admin page opens**:
+- Report an issue with the front-end and expected admin URLs
+
+---
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](../CONTRIBUTING.md) for:
+- Development workflow
+- Coding standards
+- How to add new servlet support
+- Testing guidelines
+
+---
+
+## Browser Compatibility
+
+**Supported Opera Versions**:
+- Opera 15+ (Chromium-based)
+- Opera GX
+- Opera Beta/Developer
+
+**Note**: Legacy Opera (Presto-based, Opera 12 and earlier) is not supported.
+
+---
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/yeeboo-digital/luminateEdit/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yeeboo-digital/luminateEdit/discussions)
+- **Main Documentation**: [Project README](../README.md)
+
+---
+
+## License
+
+MIT License - see [LICENSE](../LICENSE) for details.
+
+**Original Work**: Copyright (c) 2012-2017 Noah Cooper
+**Current Maintainer**: Copyright (c) 2026-present Yeeboo Digital
+
+---
+
+## Related
+
+- [Chrome Extension](../chrome/README.md)
+- [Firefox Extension](../firefox/README.md)
+- [Safari Extension](../safari/README.md)
+- [Architecture Documentation](../ARCHITECTURE.md)

@@ -19,22 +19,9 @@ chrome.runtime.onInstalled.addListener(function() {
 });
 
 luminateEdit.chrome = {
-  /* checks the current URL for known front-end servlet names, as defined in luminateEdit.servlets */
-  checkForLuminateOnlineUrl: function(tabId, changeInfo, tab) {
-    if(changeInfo.status == 'loading') {
-      luminateEdit.tabUrl = tab.url.replace('view-source:', '');
-
-      var currentServlet = luminateEdit.getCurrentServlet();
-      /* hide the action if URL broadly matches but is not a known servlet */
-      if(currentServlet == null || !luminateEdit.servlets[currentServlet] || luminateEdit.servlets[currentServlet].getUrl() == null) {
-        chrome.action.hide(tabId);
-      }
-    }
-  },
-
   /* go to the admin URL when the edit icon is clicked */
   goToEditUrl: function() {
-    /* update the tab URL to ensure it is up-to-date at the time the icon is clicked */
+    /* fetch the current tab URL at click time */
     chrome.tabs.query({
       active: true,
       windowId: chrome.windows.WINDOW_ID_CURRENT
@@ -57,6 +44,4 @@ luminateEdit.chrome = {
   }
 };
 
-/* bind listeners */
-chrome.tabs.onUpdated.addListener(luminateEdit.chrome.checkForLuminateOnlineUrl);
 chrome.action.onClicked.addListener(luminateEdit.chrome.goToEditUrl);

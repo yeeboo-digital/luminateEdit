@@ -5,12 +5,12 @@
  */
 
 /* namespace for the extension */
-var luminateEdit = {
+const luminateEdit = {
   /* stores the current tab URL */
   tabUrl: null, 
   
   /* returns the servlet for the current page */
-  getCurrentServlet: function() {
+  getCurrentServlet: () => {
     /* if tabUrl is null, or does not contain "/site/" or "/images/content/pagebuilder/", return early */
     if(luminateEdit.tabUrl == null || luminateEdit.tabUrl.indexOf('/site/') == -1 && 
        luminateEdit.tabUrl.indexOf('/images/content/pagebuilder/') == -1) {
@@ -28,7 +28,7 @@ var luminateEdit = {
   }, 
   
   /* returns the value of a parameter in the current page's query string */
-  getQueryParam: function(paramName) {
+  getQueryParam: (paramName) => {
     /* if tabUrl is null, or does not contain a "?", return early */
     if(luminateEdit.tabUrl == null || luminateEdit.tabUrl.indexOf('?') == -1) {
       return null;
@@ -36,14 +36,14 @@ var luminateEdit = {
     else {
       /* get the list of query strings, accounting for escaped ampersands */
       /* use a RegExp to ensure "&amp;" is not converted to "&" by UglifyJS */
-      var queryStrings = '&' + luminateEdit.tabUrl.split('?')[1].replace(new RegExp('&' + 'amp;', 'g'), '&');
-      
+      const queryStrings = `&${luminateEdit.tabUrl.split('?')[1].replace(new RegExp('&' + 'amp;', 'g'), '&')}`;
+
       /* if the param is not found, return early */
-      if(queryStrings.indexOf('&' + paramName + '=') == -1) {
+      if(queryStrings.indexOf(`&${paramName}=`) == -1) {
         return null;
       }
       else {
-        return queryStrings.split('&' + paramName + '=')[1].split('&')[0];
+        return queryStrings.split(`&${paramName}=`)[1].split('&')[0];
       }
     }
   }, 
@@ -51,8 +51,8 @@ var luminateEdit = {
   /* common methods shared by multiple servlets */
   common: {
     api: {
-      getUrl: function() {
-        var adminUrl = 'SiteData?sdp=open_home';
+      getUrl: () => {
+        const adminUrl = 'SiteData?sdp=open_home';
         
         return adminUrl;
       }

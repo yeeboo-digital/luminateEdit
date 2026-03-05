@@ -1,22 +1,33 @@
 /*
- * Luminate Online Page Editor - Firefox
+ * Luminate Online Page Editor - Chrome
  * luminateEdit-chrome.js
  * Version: 1.12 (15-NOV-2017)
  * Updated for Manifest V3 compatibility
  */
 
+/* set up declarativeContent rules on install to show action for potential Luminate Online pages */
+chrome.runtime.onInstalled.addListener(function() {
+  chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
+    chrome.declarativeContent.onPageChanged.addRules([{
+      conditions: [
+        new chrome.declarativeContent.PageStateMatcher({ pageUrl: { urlContains: '/site/' } }),
+        new chrome.declarativeContent.PageStateMatcher({ pageUrl: { urlContains: '/images/content/pagebuilder/' } })
+      ],
+      actions: [new chrome.declarativeContent.ShowAction()]
+    }]);
+  });
+});
+
 luminateEdit.chrome = {
   /* checks the current URL for known front-end servlet names, as defined in luminateEdit.servlets */
   checkForLuminateOnlineUrl: function(tabId, changeInfo, tab) {
-    /* set the tabUrl and show the button as soon as the tab starts loading */
     if(changeInfo.status == 'loading') {
       luminateEdit.tabUrl = tab.url.replace('view-source:', '');
 
       var currentServlet = luminateEdit.getCurrentServlet();
-      if(currentServlet != null && luminateEdit.servlets[currentServlet] && luminateEdit.servlets[currentServlet].getUrl() != null) {
-        chrome.action.enable(tabId);
-      } else {
-        chrome.action.disable(tabId);
+      /* hide the action if URL broadly matches but is not a known servlet */
+      if(currentServlet == null || !luminateEdit.servlets[currentServlet] || luminateEdit.servlets[currentServlet].getUrl() == null) {
+        chrome.action.hide(tabId);
       }
     }
   },
@@ -45,9 +56,6 @@ luminateEdit.chrome = {
     });
   }
 };
-
-/* disable action by default */
-chrome.action.disable();
 
 /* bind listeners */
 chrome.tabs.onUpdated.addListener(luminateEdit.chrome.checkForLuminateOnlineUrl);

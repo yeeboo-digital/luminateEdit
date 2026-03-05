@@ -4,16 +4,15 @@ A browser extension that streamlines editing workflows for [Luminate Online](htt
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Status: Active Modernization 🚧
+## Status: Manifest V3 Migration Complete
 
-This extension is currently being modernized for 2026:
 - ✅ Documentation updates
-- 🔄 Migrating to Manifest V3
+- ✅ Migrated to Manifest V3 (Chrome, Firefox, Opera, Edge)
 - 🔄 Modern build system implementation
 - 🔄 Testing infrastructure
 - 📋 Browser store republication planned
 
-**Original Version**: 1.12 (November 2017)
+**Current Version**: 2.0.0-alpha.1 (Manifest V3)
 **Maintained By**: [Yeeboo Digital](https://github.com/yeeboo-digital)
 **Original Author**: [Noah Cooper](https://github.com/noahcooper)
 
@@ -48,11 +47,11 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for complete technical details.
 
 | Browser | Status | Manifest | Installation |
 |---------|--------|----------|--------------|
-| **Chrome** | 🔄 Updating to MV3 | V2 → V3 | [Chrome Web Store](https://chrome.google.com/webstore/detail/luminate-online-page-edit/dpkklfhgpnjklakhoelfnbfgihkfgpap) (legacy) |
-| **Firefox** | 🔄 Updating to MV3 | V2 → V3 | Manual install (see below) |
-| **Opera** | 🔄 Updating | V2 → V3 | Manual install (see below) |
-| **Safari** | 🔄 Modernizing | Legacy → WebExtension | Manual install (see below) |
-| **Edge** | 📋 Planned | V3 | Coming soon |
+| **Chrome** | ✅ Complete | V3 | [Chrome Web Store](https://chrome.google.com/webstore/detail/luminate-online-page-edit/dpkklfhgpnjklakhoelfnbfgihkfgpap) (legacy) |
+| **Firefox** | ✅ Complete | V3 | Manual install (see below) |
+| **Opera** | ✅ Complete | V3 | Manual install (see below) |
+| **Edge** | ✅ Complete | V3 | Manual install (see below) |
+| **Safari** | ⏸️ Deferred | N/A | Not currently supported |
 
 ---
 
@@ -91,11 +90,17 @@ Once modernization is complete, the extension will be published to official brow
 
 4. **Load in your browser**
 
-   **Chrome/Edge:**
+   **Chrome:**
    1. Navigate to `chrome://extensions/`
    2. Enable "Developer mode" (toggle in top right)
    3. Click "Load unpacked"
    4. Select the `chrome/` directory
+
+   **Edge:**
+   1. Navigate to `edge://extensions/`
+   2. Enable "Developer mode" (toggle in left sidebar)
+   3. Click "Load unpacked"
+   4. Select the `edge/` directory
 
    **Firefox:**
    1. Navigate to `about:debugging#/runtime/this-firefox`
@@ -107,10 +112,6 @@ Once modernization is complete, the extension will be published to official brow
    2. Enable "Developer mode"
    3. Click "Load unpacked"
    4. Select the `opera/` directory
-
-   **Safari:**
-   - Safari extension modernization in progress
-   - Legacy `.safariextz` format available but not recommended
 
 ---
 
@@ -138,7 +139,7 @@ luminateEdit/
 ├── chrome/                        # Chrome-specific implementation
 ├── firefox/                       # Firefox-specific implementation
 ├── opera/                         # Opera-specific implementation
-├── safari/                        # Safari-specific implementation
+├── edge/                          # Edge-specific implementation
 └── docs/                          # Documentation
 ```
 
@@ -149,7 +150,6 @@ npm run build          # Build all browser extensions
 npm run build:chrome   # Build Chrome extension only
 npm run build:firefox  # Build Firefox extension only
 npm run build:opera    # Build Opera extension only
-npm run build:safari   # Build Safari extension only
 npm run lint           # Run linting
 npm run test           # Run tests
 ```
@@ -264,16 +264,13 @@ This may indicate:
 
 ## Roadmap
 
-### Phase 1: Foundation (Current)
+### Phase 1: Foundation
 - [x] Documentation modernization
-- [ ] Add LICENSE and CONTRIBUTING.md
-- [ ] Set up modern build system
-- [ ] Add testing framework
+- [x] Add LICENSE and CONTRIBUTING.md
 
 ### Phase 2: Modernization
-- [ ] Migrate to Manifest V3 (Chrome, Firefox, Opera)
-- [ ] Modernize Safari extension to WebExtension
-- [ ] Add Edge support
+- [x] Migrate to Manifest V3 (Chrome, Firefox, Opera, Edge)
+- [ ] Set up modern build system
 - [ ] Comprehensive testing
 
 ### Phase 3: Enhancement
@@ -287,7 +284,6 @@ This may indicate:
 - [ ] Publish to Firefox Add-ons
 - [ ] Publish to Opera Add-ons
 - [ ] Submit to Edge Add-ons
-- [ ] Safari App Store (if feasible)
 
 ---
 
@@ -295,10 +291,10 @@ This may indicate:
 
 See [CHANGELOG.md](./CHANGELOG.md) for version history.
 
-**Latest**: Version 1.12 (November 15, 2017)
-- Minor bug fixes
-- Firefox 53+ support
-- Dropped legacy browser support
+**Latest**: Version 2.0.0-alpha.1
+- Manifest V3 migration for all browsers
+- Microsoft Edge support added
+- Service worker background scripts
 
 ---
 

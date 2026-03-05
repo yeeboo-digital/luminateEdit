@@ -4,8 +4,8 @@ Browser extension for Chrome/Chromium that adds a pencil icon to the address bar
 
 ## Status
 
-**Current Version**: 1.12 (Manifest V2)
-**Modernization**: 🔄 Migrating to Manifest V3
+**Current Version**: 2.0.0-alpha.1 (Manifest V3)
+**Status**: ✅ MV3 Migration Complete
 **Original Author**: [Noah Cooper](https://github.com/noahcooper)
 **Current Maintainer**: [Yeeboo Digital](https://github.com/yeeboo-digital)
 
@@ -23,9 +23,9 @@ Supports 50+ page types including PageBuilder, TeamRaiser, Donation Forms, Surve
 
 ## Installation
 
-### From Chrome Web Store (Legacy)
+### From Chrome Web Store
 
-The current Manifest V2 version is available but will need updating soon:
+The legacy Manifest V2 version (1.12) is still available on the Chrome Web Store. A new V3 version will be published soon:
 
 [Install from Chrome Web Store](https://chrome.google.com/webstore/detail/luminate-online-page-edit/dpkklfhgpnjklakhoelfnbfgihkfgpap)
 
@@ -57,17 +57,17 @@ The current Manifest V2 version is available but will need updating soon:
 
 ## Technical Details
 
-### Current Implementation (Manifest V2)
+### Current Implementation (Manifest V3)
 
-- **Background Script**: Persistent background page
-- **Page Action API**: Shows icon only on LO pages
-- **Permissions**: `tabs`
+- **Background**: Service worker (`background.js`)
+- **Action API**: Shows icon on LO pages
+- **Permissions**: `tabs`, `declarativeContent`
 
 ### Files
 
 ```
 chrome/
-├── manifest.json       # Extension configuration (MV2)
+├── manifest.json       # Extension configuration (MV3)
 ├── background.js       # Compiled background script
 ├── logo16.png         # 16x16 icon
 ├── logo48.png         # 48x48 icon
@@ -86,30 +86,6 @@ Compiled into [background.js](https://github.com/yeeboo-digital/luminateEdit/blo
 
 ---
 
-## Manifest V3 Migration
-
-⚠️ **Important**: Chrome is deprecating Manifest V2 extensions. This extension is being migrated to MV3.
-
-### Key Changes Required
-
-1. **Service Worker** instead of background page
-2. **Action API** instead of Page Action
-3. **Updated permissions** model
-4. **Modern JavaScript** (ES6 modules)
-
-### Migration Status
-
-- [ ] Update manifest to V3
-- [ ] Convert background page to service worker
-- [ ] Replace pageAction with action API
-- [ ] Update permissions
-- [ ] Test thoroughly
-- [ ] Publish to Chrome Web Store
-
-See [ARCHITECTURE.md](../ARCHITECTURE.md) for migration details.
-
----
-
 ## Development
 
 ### Testing Locally
@@ -123,7 +99,7 @@ After loading the unpacked extension:
 
 ### Debugging
 
-- **View logs**: Right-click extension icon → Inspect background page
+- **View logs**: `chrome://extensions/` → Click "Inspect views: service worker"
 - **Reload extension**: `chrome://extensions/` → Click reload button
 - **Check permissions**: Ensure extension has access to the site
 
@@ -180,5 +156,5 @@ MIT License - see [LICENSE](../LICENSE) for details.
 
 - [Firefox Extension](../firefox/README.md)
 - [Opera Extension](../opera/README.md)
-- [Safari Extension](../safari/README.md)
+- [Edge Extension](../edge/README.md)
 - [Architecture Documentation](../ARCHITECTURE.md)

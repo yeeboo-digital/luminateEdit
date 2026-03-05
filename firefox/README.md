@@ -4,8 +4,8 @@ Browser extension for Firefox that adds a pencil icon to the address bar when vi
 
 ## Status
 
-**Current Version**: 1.12 (Manifest V2)
-**Modernization**: 🔄 Migrating to Manifest V3
+**Current Version**: 2.0.0-alpha.1 (Manifest V3)
+**Status**: ✅ MV3 Migration Complete
 **Original Author**: [Noah Cooper](https://github.com/noahcooper)
 **Current Maintainer**: [Yeeboo Digital](https://github.com/yeeboo-digital)
 
@@ -62,18 +62,18 @@ The extension will be published to Firefox Add-ons after Manifest V3 migration.
 
 ## Technical Details
 
-### Current Implementation (Manifest V2)
+### Current Implementation (Manifest V3)
 
-- **Background Scripts**: Non-persistent background scripts
-- **Page Action API**: Shows icon only on LO pages
-- **Permissions**: `tabs`
+- **Background Scripts**: MV3 background scripts
+- **Action API**: Shows icon on LO pages
+- **Permissions**: `tabs`, `activeTab`
 - **Browser API**: Uses `browser.*` namespace (WebExtensions)
 
 ### Files
 
 ```
 firefox/
-├── manifest.json       # Extension configuration (MV2)
+├── manifest.json       # Extension configuration (MV3)
 ├── background.js       # Compiled background script
 ├── logo16.png         # 16x16 icon
 ├── logo48.png         # 48x48 icon
@@ -81,12 +81,12 @@ firefox/
 ├── screenshot.png     # Store screenshot
 └── src/
     ├── background.js           # Background script entry point
-    └── luminateEdit-chrome.js  # WebExtension wrapper (compatible with Chrome)
+    └── luminateEdit-firefox.js # Firefox WebExtension wrapper
 ```
 
 ### Core Logic
 
-The extension uses shared logic from [luminateEdit.js](https://github.com/yeeboo-digital/luminateEdit/blob/main/shared/src/luminateEdit.js) for servlet detection and URL mapping, wrapped in WebExtension APIs in [luminateEdit-chrome.js](https://github.com/yeeboo-digital/luminateEdit/blob/main/firefox/src/luminateEdit-chrome.js).
+The extension uses shared logic from [luminateEdit.js](https://github.com/yeeboo-digital/luminateEdit/blob/main/shared/src/luminateEdit.js) for servlet detection and URL mapping, wrapped in WebExtension APIs in the Firefox-specific wrapper.
 
 Compiled into [background.js](https://github.com/yeeboo-digital/luminateEdit/blob/main/firefox/background.js) for runtime.
 
@@ -113,29 +113,6 @@ Firefox uses the standard WebExtensions API with some differences from Chrome:
 - Requires signing by Mozilla
 - Persists across restarts
 - Needed for distribution
-
----
-
-## Manifest V3 Migration
-
-⚠️ **Important**: Firefox is transitioning to Manifest V3. This extension is being updated.
-
-### Key Changes Required
-
-1. **Background Scripts**: Update to MV3 format
-2. **Action API**: Replace pageAction with action
-3. **Permissions**: Update to V3 model
-4. **Testing**: Ensure Firefox-specific compatibility
-
-### Migration Status
-
-- [ ] Update manifest to V3
-- [ ] Test Firefox-specific APIs
-- [ ] Handle Promise-based APIs
-- [ ] Test in Firefox (latest and ESR)
-- [ ] Submit to Firefox Add-ons
-
-See [ARCHITECTURE.md](../ARCHITECTURE.md) for migration details.
 
 ---
 
@@ -226,5 +203,5 @@ MIT License - see [LICENSE](../LICENSE) for details.
 
 - [Chrome Extension](../chrome/README.md)
 - [Opera Extension](../opera/README.md)
-- [Safari Extension](../safari/README.md)
+- [Edge Extension](../edge/README.md)
 - [Architecture Documentation](../ARCHITECTURE.md)

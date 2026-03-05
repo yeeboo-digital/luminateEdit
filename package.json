@@ -15,7 +15,6 @@
     "build:firefox": "webpack --config webpack.firefox.config.js --mode production",
     "build:opera": "webpack --config webpack.opera.config.js --mode production",
     "build:edge": "webpack --config webpack.edge.config.js --mode production",
-    "build:safari": "echo 'Safari build process TBD - requires conversion to WebExtension format'",
     "clean": "rimraf dist",
     "lint": "npm run lint:js && npm run lint:manifest",
     "lint:js": "eslint \"**/*.js\" --ignore-pattern dist/ --ignore-pattern node_modules/",

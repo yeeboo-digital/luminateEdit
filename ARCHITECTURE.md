@@ -39,7 +39,7 @@ The Luminate Online Page Editor is a browser extension that provides one-click a
 │  └───────────────────────────────────────────────────────┘  │
 │                            ↓ Tab URL change event           │
 │  ┌───────────────────────────────────────────────────────┐  │
-│  │          Background Script (background.js)            │  │
+│  │         Service Worker (background.js)               │  │
 │  │                                                        │  │
 │  │  ┌──────────────────────────────────────────────┐    │  │
 │  │  │   luminateEdit Core (luminateEdit.js)       │    │  │
@@ -50,7 +50,7 @@ The Luminate Online Page Editor is a browser extension that provides one-click a
 │  │  │  2. servlets.PageServer.getUrl()            │    │  │
 │  │  │     ↓ Returns admin URL                     │    │  │
 │  │  │                                              │    │  │
-│  │  │  3. Browser API: show page action icon      │    │  │
+│  │  │  3. Browser API: show action icon            │    │  │
 │  │  └──────────────────────────────────────────────┘    │  │
 │  └───────────────────────────────────────────────────────┘  │
 │                            ↓ User clicks icon               │
@@ -116,13 +116,13 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     var servlet = luminateEdit.getCurrentServlet();
 
     if (servlet && luminateEdit.servlets[servlet]) {
-      chrome.pageAction.show(tabId);  // Show pencil icon
+      chrome.action.setIcon({tabId: tabId, path: "logo128.png"});
     }
   }
 });
 
 // Handle icon click
-chrome.pageAction.onClicked.addListener(function(tab) {
+chrome.action.onClicked.addListener(function(tab) {
   var servlet = luminateEdit.getCurrentServlet();
   var adminUrl = luminateEdit.servlets[servlet].getUrl();
   chrome.tabs.create({ url: adminUrl });
@@ -133,29 +133,12 @@ chrome.pageAction.onClicked.addListener(function(tab) {
 
 Define extension metadata, permissions, and entry points.
 
-**Current**: Manifest V2 (legacy)
-```json
-{
-  "manifest_version": 2,
-  "name": "Luminate Online Page Editor",
-  "version": "1.12",
-  "background": {
-    "scripts": ["background.js"]
-  },
-  "page_action": {
-    "default_icon": "logo128.png",
-    "default_title": "Edit this page"
-  },
-  "permissions": ["tabs"]
-}
-```
-
-**Planned**: Manifest V3 (modern)
+**Current**: Manifest V3
 ```json
 {
   "manifest_version": 3,
   "name": "Luminate Online Page Editor",
-  "version": "2.0",
+  "version": "1.12",
   "background": {
     "service_worker": "background.js"
   },
@@ -163,9 +146,11 @@ Define extension metadata, permissions, and entry points.
     "default_icon": "logo128.png",
     "default_title": "Edit this page"
   },
-  "permissions": ["tabs", "scripting"]
+  "permissions": ["tabs", "declarativeContent"]
 }
 ```
+
+Note: Firefox uses `"background": { "scripts": ["background.js"] }` instead of `service_worker`, and `activeTab` instead of `declarativeContent`.
 
 ---
 
@@ -217,9 +202,9 @@ if (luminateEdit.servlets["PageServer"]) {
 }
 ```
 
-**6. Show page action icon**
+**6. Show action icon**
 ```javascript
-chrome.pageAction.show(tabId);
+chrome.action.setIcon({tabId: tabId, path: "logo128.png"});
 ```
 
 **7. User clicks pencil icon**
@@ -423,47 +408,35 @@ getQueryParam: function(paramName) {
 
 ### Chrome / Chromium / Edge
 
-**API**: Chrome Extensions API
-**Background**: Persistent background page (MV2) or service worker (MV3)
-**Icon**: Page Action API (MV2) or Action API (MV3)
+**API**: Chrome Extensions API (Manifest V3)
+**Background**: Service worker
+**Icon**: Action API
 
 ```javascript
 chrome.tabs.onUpdated.addListener(callback);
-chrome.pageAction.show(tabId);
-chrome.pageAction.onClicked.addListener(callback);
+chrome.action.onClicked.addListener(callback);
 ```
 
 ### Firefox
 
-**API**: WebExtensions API (compatible with Chrome)
-**Background**: Background page or background scripts
-**Icon**: Page Action API
+**API**: WebExtensions API (Manifest V3)
+**Background**: Background scripts
+**Icon**: Action API
 
 ```javascript
 browser.tabs.onUpdated.addListener(callback);
-browser.pageAction.show(tabId);
-browser.pageAction.onClicked.addListener(callback);
+browser.action.onClicked.addListener(callback);
 ```
 
 **Differences from Chrome**:
 - Uses `browser.*` namespace (also supports `chrome.*`)
 - Returns Promises instead of callbacks (can use both)
+- Uses `"background": { "scripts": [...] }` instead of `service_worker`
 
 ### Opera
 
-**API**: Chrome Extensions API (Opera uses Chromium)
+**API**: Chrome Extensions API (Manifest V3, Opera uses Chromium)
 **Implementation**: Identical to Chrome
-
-### Safari (Legacy)
-
-**API**: Safari Extensions API (deprecated)
-**Background**: Global page
-**Implementation**: Different event model
-
-**Safari WebExtension (Modern)**:
-- Uses WebExtensions API
-- Compatible with Chrome/Firefox approach
-- Requires conversion from legacy format
 
 ---
 
@@ -483,7 +456,7 @@ browser.pageAction.onClicked.addListener(callback);
 │           Browser Extension                 │
 │                                              │
 │  ┌────────────────────────────────────┐    │
-│  │  Background Script (Persistent)     │    │
+│  │  Service Worker (background.js)      │    │
 │  │  - Monitors all tabs                │    │
 │  │  - Maintains luminateEdit state     │    │
 │  │  - Shows/hides icon                 │    │
@@ -492,7 +465,7 @@ browser.pageAction.onClicked.addListener(callback);
 │  ┌────────────────────────────────────┐    │
 │  │      Browser APIs                   │    │
 │  │  - chrome.tabs                      │    │
-│  │  - chrome.pageAction                │    │
+│  │  - chrome.action                    │    │
 │  └────────────────────────────────────┘    │
 └─────────────────────────────────────────────┘
 ```
@@ -503,7 +476,7 @@ For each tab:
 
 1. **Tab created/URL changed** → `onUpdated` event fires
 2. **Extension checks URL** → `luminateEdit.getCurrentServlet()`
-3. **Servlet found** → `chrome.pageAction.show(tabId)`
+3. **Servlet found** → `chrome.action.setIcon(tabId)`
 4. **User clicks icon** → `onClicked` event fires
 5. **New tab opens** → Admin URL loaded
 
@@ -519,26 +492,17 @@ When extension updates:
 
 ## Technical Decisions
 
-### Why Page Action Instead of Browser Action?
+### Why Action API?
 
-**Page Action** (icon in address bar):
-- ✅ Only shows when applicable (on LO pages)
-- ✅ Contextual to current page
-- ✅ Cleaner UX (doesn't clutter toolbar)
+In Manifest V3, `pageAction` and `browserAction` are unified into the `action` API. The extension uses `declarativeContent` (Chrome/Opera/Edge) or `activeTab` (Firefox) to control when the icon is active.
 
-**Browser Action** (always visible):
-- ❌ Always present even on non-LO pages
-- ❌ Would require disabling/graying out
+### Why Service Worker Instead of Content Scripts?
 
-**Decision**: Page Action is more appropriate for context-specific tools.
-
-### Why Background Page Instead of Content Scripts?
-
-**Background Page**:
+**Service Worker** (Manifest V3):
 - ✅ Runs once for all tabs (efficient)
 - ✅ Can access browser APIs directly
-- ✅ Persistent state
 - ✅ Doesn't inject code into pages (safer)
+- ✅ Required by Manifest V3 (Chrome/Opera/Edge)
 
 **Content Scripts**:
 - ❌ Would run in every tab (inefficient)
@@ -546,7 +510,9 @@ When extension updates:
 - ❌ Would need messaging to background
 - ❌ Potential conflicts with page JavaScript
 
-**Decision**: Background page is more efficient and safer.
+**Decision**: Service worker is more efficient and safer.
+
+Note: Firefox MV3 uses background scripts instead of service workers, but the behavior is equivalent.
 
 ### Why Global Object Instead of Modules?
 
@@ -636,14 +602,6 @@ The extension currently supports 50+ servlets. Here's the complete list:
 ---
 
 ## Future Architecture Improvements
-
-### Manifest V3 Migration
-
-**Changes needed**:
-1. Service workers instead of background pages
-2. `action` API instead of `pageAction`
-3. `scripting` permission for dynamic behavior
-4. Modern JavaScript (ES6 modules)
 
 ### Build System
 

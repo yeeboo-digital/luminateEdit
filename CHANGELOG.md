@@ -22,15 +22,16 @@ This major version represents a complete modernization of the extension for 2026
 - Proper semantic versioning
 
 #### Changed
-- **[BREAKING]** Migrating to Manifest V3 (from V2)
+- **[BREAKING]** Migrated to Manifest V3 (from V2) for all browsers
+- Chrome: service worker background, `action` API, `declarativeContent` permission
+- Firefox: MV3 background scripts, `action` API, `activeTab` permission
+- Opera: service worker background, `action` API, `declarativeContent` permission
+- Microsoft Edge support added (MV3, service worker)
 - Updated repository from noahcooper → yeeboo-digital
 - Modernized JavaScript (ES6+)
 - Restructured project for better maintainability
 
 #### Planned
-- Manifest V3 support for Chrome, Firefox, Opera
-- Modern Safari WebExtension format
-- Microsoft Edge support
 - Comprehensive test suite
 - Automated CI/CD pipeline
 - Browser store republication
